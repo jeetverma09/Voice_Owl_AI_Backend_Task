@@ -1,0 +1,256 @@
+{
+    "info": {
+        "name": "Conversation Service API",
+        "description": "API collection for testing the Conversation Session Service",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create or Get Session",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"sessionId\": \"session-123\",\n  \"language\": \"en\",\n  \"status\": \"initiated\",\n  \"metadata\": {\n    \"userId\": \"user-456\",\n    \"channel\": \"phone\"\n  }\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/sessions",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions"
+                    ]
+                },
+                "description": "Creates a new session or returns existing one (idempotent)"
+            }
+        },
+        {
+            "name": "Add Event to Session",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"eventId\": \"event-001\",\n  \"type\": \"user_speech\",\n  \"payload\": {\n    \"text\": \"Hello, how can I help you?\",\n    \"confidence\": 0.95\n  }\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/sessions/session-123/events",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions",
+                        "session-123",
+                        "events"
+                    ]
+                },
+                "description": "Adds an event to an existing session"
+            }
+        },
+        {
+            "name": "Add Bot Speech Event",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"eventId\": \"event-002\",\n  \"type\": \"bot_speech\",\n  \"payload\": {\n    \"text\": \"I can assist you with your inquiry.\",\n    \"duration\": 2.5\n  }\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/sessions/session-123/events",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions",
+                        "session-123",
+                        "events"
+                    ]
+                },
+                "description": "Adds a bot speech event"
+            }
+        },
+        {
+            "name": "Add System Event",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"eventId\": \"event-003\",\n  \"type\": \"system\",\n  \"payload\": {\n    \"action\": \"call_transferred\",\n    \"destination\": \"support-queue\"\n  }\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/sessions/session-123/events",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions",
+                        "session-123",
+                        "events"
+                    ]
+                },
+                "description": "Adds a system event"
+            }
+        },
+        {
+            "name": "Get Session with Events",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/sessions/session-123?offset=0&limit=50",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions",
+                        "session-123"
+                    ],
+                    "query": [
+                        {
+                            "key": "offset",
+                            "value": "0"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "50"
+                        }
+                    ]
+                },
+                "description": "Retrieves session with paginated events"
+            }
+        },
+        {
+            "name": "Complete Session",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/sessions/session-123/complete",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions",
+                        "session-123",
+                        "complete"
+                    ]
+                },
+                "description": "Marks a session as completed (idempotent)"
+            }
+        },
+        {
+            "name": "Test Idempotency - Create Same Session",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"sessionId\": \"session-123\",\n  \"language\": \"fr\",\n  \"status\": \"active\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/sessions",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions"
+                    ]
+                },
+                "description": "Tests idempotency - should return existing session without modification"
+            }
+        },
+        {
+            "name": "Test Duplicate Event",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"eventId\": \"event-001\",\n  \"type\": \"user_speech\",\n  \"payload\": {\n    \"text\": \"Different text - should not update\",\n    \"confidence\": 0.50\n  }\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/sessions/session-123/events",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions",
+                        "session-123",
+                        "events"
+                    ]
+                },
+                "description": "Tests event idempotency - should return existing event"
+            }
+        },
+        {
+            "name": "Test Session Not Found",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/sessions/non-existent-session",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "sessions",
+                        "non-existent-session"
+                    ]
+                },
+                "description": "Tests error handling - should return 404"
+            }
+        }
+    ]
+}
